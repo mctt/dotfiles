@@ -1,0 +1,66 @@
+#https://claude.ai/share/c29363a7-4973-4791-9d0f-684dedb91d1b
+
+export PATH="/root/bin:$PATH"
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# History settings
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Auto-cd when typing just a directory name
+shopt -s autocd
+
+# Better tab completion
+shopt -s cdspell
+shopt -s dirspell
+shopt -s nocaseglob
+
+# Aliases
+alias la='ls -la'
+alias ll='ls -l'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Auto-attach to screen session
+if [ -z "$STY" ]; then
+    screen -xRR
+fi
+
+# Prompt (simple and clean)
+#PS1='\u@\h:\w\$ '
+PS1='@unas :\w\$ '
+
+alias python=python3.11
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+alias na.='nano $(fzf)'
+
+# fzf file/dir utilities
+fcp() {
+  local src dst
+  src=$(find . -type f | fzf --prompt="Source file: " --preview="ls -lh {}") || return
+  dst=$(find . -type d | fzf --prompt="Dest dir: "    --preview="ls {}") || return
+  cp -v "$src" "$dst"
+}
+
+frs() {
+  local src dst
+  src=$(find . -type f | fzf --prompt="Source file: " --preview="ls -lh {}") || return
+  dst=$(find . -type d | fzf --prompt="Dest dir: "    --preview="ls {}") || return
+  rsync -avh --progress "$src" "$dst"
+}
+
+frsd() {
+  local src dst
+  src=$(find . -type d | fzf --prompt="Source dir: " --preview="ls {}") || return
+  dst=$(find . -type d | fzf --prompt="Dest dir: "   --preview="ls {}") || return
+  echo "Rsync: $src → $dst"
+  read -p "Continue? [y/N] " confirm
+  [[ "$confirm" == [yY] ]] && rsync -avh --progress "$src/" "$dst"
+}
