@@ -96,4 +96,4 @@ eval "$(chezmoi completion bash)"
 # So chezmoi edit uses nank and not vi
 export EDITOR=nano
 
-#what the diff
+#what the diff.  MaGriff
