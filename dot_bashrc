@@ -93,4 +93,5 @@ eval "$(chezmoi completion bash)"
 [[ -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
   source /usr/local/share/bash-completion/bash_completion.sh
 
+# So chezmoi edit uses nank and not vi
 export EDITOR=nano
