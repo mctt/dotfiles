@@ -88,7 +88,7 @@ esac
 eval "$(chezmoi completion bash)"
 
 # pkg install bash-completion
-Bash completion
+# Bash completion
 [[ -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
   source /usr/local/share/bash-completion/bash_completion.sh
 
