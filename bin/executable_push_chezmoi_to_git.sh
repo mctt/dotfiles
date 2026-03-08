@@ -9,6 +9,14 @@
 #git push
 #exit
 
+echo "use chezmoi apply to download from GutHub"
+
+# Check if running on unas
+if [ "$(hostname)" != "unas" ]; then
+  read -p "Warning: This is not unas (hostname: $(hostname)). Are you sure? [y/N] " confirm
+  [[ "$confirm" == [yY] ]] || exit 1
+fi
+
 #testing with the chezmoi git command
 chezmoi git add .
 chezmoi git commit -- -m "update from $(hostname)"
