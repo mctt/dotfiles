@@ -93,7 +93,7 @@ eval "$(chezmoi completion bash)"
 [[ -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
   source /usr/local/share/bash-completion/bash_completion.sh
 
-# So chezmoi edit uses nank and not vi
+# So chezmoi edit uses nano and not vi
 export EDITOR=nano
 
-#what the diff.  MaGriff
+#what the diff.  MaGriff. Tets
