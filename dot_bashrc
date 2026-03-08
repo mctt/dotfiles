@@ -79,10 +79,11 @@ frsd() {
   [[ "$confirm" == [yY] ]] && rsync -avh --progress "$src/" "$dst"
 }
 
-case "$(hostname)" in
-  unas) [ -f ~/.bashrc.unas ] && source ~/.bashrc.unas ;;
-  qnas) [ -f ~/.bashrc.qnas ] && source ~/.bashrc.qnas ;;
-esac
+# might be causing problems
+#case "$(hostname)" in
+#  unas) [ -f ~/.bashrc.unas ] && source ~/.bashrc.unas ;;
+#  qnas) [ -f ~/.bashrc.qnas ] && source ~/.bashrc.qnas ;;
+#esac
 
 # Chezmoi bash completion
 eval "$(chezmoi completion bash)"
