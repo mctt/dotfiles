@@ -92,3 +92,4 @@ eval "$(chezmoi completion bash)"
 [[ -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
   source /usr/local/share/bash-completion/bash_completion.sh
 
+export EDITOR=nano
