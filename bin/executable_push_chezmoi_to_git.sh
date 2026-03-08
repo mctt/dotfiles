@@ -20,7 +20,7 @@ fi
 
 #testing with the chezmoi git command
 chezmoi git add .
-chezmoi git commit -- -m "update from $(hostname)"
+chezmoi git commit -- -m "commit from $(hostname)"
 chezmoi git push
 # and no need for exit because not subshell is created
 
