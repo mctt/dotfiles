@@ -27,13 +27,27 @@ alias ..='cd ..'
 alias ...='cd ../..'
 
 # Auto-attach to screen session
-if [ -z "$STY" ]; then
+#if [ -z "$STY" ]; then
+#    screen -xRR
+#fi
+# breaks chezmoi subshell. 
+
+# Only auto-attach if we are a login shell and not already in a multiplexer
+if [ -z "$STY" ] && [ -z "$TMUX" ] && shopt -q login_shell; then
     screen -xRR
 fi
+# Display shell nesting to detect runaway subshells
+# echo $SHLVL
+echo "# Display shell nesting level on login to detect runaway subshells"
+echo "SHLVL: $SHLVL"
 
 # Prompt (simple and clean)
 #PS1='\u@\h:\w\$ '
-PS1='@unas :\w\$ '
+#PS1='@unas :\w\$ '
+# this keeps an eye in thr subs sessions
+# PS1='[$SHLVL] \u@\h:\w\$ '
+PS1='$SHLVL \h:\w\$ '
+
 
 alias python=python3.11
 
@@ -64,3 +78,17 @@ frsd() {
   read -p "Continue? [y/N] " confirm
   [[ "$confirm" == [yY] ]] && rsync -avh --progress "$src/" "$dst"
 }
+
+case "$(hostname)" in
+  unas) [ -f ~/.bashrc.unas ] && source ~/.bashrc.unas ;;
+  qnas) [ -f ~/.bashrc.qnas ] && source ~/.bashrc.qnas ;;
+esac
+
+# Chezmoi bash completion
+eval "$(chezmoi completion bash)"
+
+# pkg install bash-completion
+Bash completion
+[[ -f /usr/local/share/bash-completion/bash_completion.sh ]] && \
+  source /usr/local/share/bash-completion/bash_completion.sh
+
