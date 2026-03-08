@@ -9,7 +9,8 @@
 #git push
 #exit
 
-echo "use chezmoi apply to download from GutHub"
+# note: chezmoi update downloads from GitHub AND apply(s)
+echo "use chezmoi update to download from GutHub"
 
 # Check if running on unas
 if [ "$(hostname)" != "unas" ]; then
