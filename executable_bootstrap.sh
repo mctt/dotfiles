@@ -57,6 +57,11 @@ echo "Installing detox..."
 git clone https://github.com/Alyetama/detox.git ~/detox
 cd ~/detox
 pip install -e . --break-system-packages
+
+# Bash completion
+echo "Installing bash-completion..."
+pkg install -y bash-completion
+
 cd ~
 
 echo ""

@@ -10,7 +10,6 @@
 #exit
 
 #testing with the chezmoi git command
-#!/bin/bash
 chezmoi git add .
 chezmoi git commit -- -m "update from $(hostname)"
 chezmoi git push
