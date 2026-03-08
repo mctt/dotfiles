@@ -10,7 +10,7 @@
 #exit
 
 # note: chezmoi update downloads from GitHub AND apply(s)
-echo "use chezmoi update to download from GutHub"
+echo "use chezmoi update to download from GitHub"
 
 # Check if running on unas
 if [ "$(hostname)" != "unas" ]; then
