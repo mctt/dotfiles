@@ -29,8 +29,9 @@ Once the storage is mounted, enter the jail and verify your configuration files.
 1. https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 
 
-### Or just get the compressed file.
+### Or just Download the compressed file.
 - https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
+••• Menu and Download.
 
 ### 1. Verify files
 ```bash
