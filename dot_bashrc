@@ -26,7 +26,10 @@ shopt -s nocaseglob
 alias ..='cd ..'
 alias ...='cd ../..'
 alias grep='grep --color=auto'
-alias ports='ss -tulpn'
+# Theee is no ss or iproute2 in FreeBSD 13
+#alias ports='ss -tulpn'
+# Use sockstat
+alias ports='sockstat -l'
 alias bashrc='chezmoi edit ~/.bashrc && chezmoi --force apply ~/.bashrc && source ~/.bashrc'
 
 # eza as ls replacement

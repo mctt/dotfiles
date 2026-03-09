@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 # Bootstrap a new FreeBSD jail
 
@@ -32,20 +31,30 @@ if [ $ERRORS -gt 0 ]; then
   exit 1
 fi
 
-echo "All pre-requisites found. Proceeding..."
+echo "All pre-requisites found."
+echo ""
+read -p "Proceed with bootstrap on $(hostname)? [y/N] " confirm
+[[ "$confirm" == [yY] ]] || exit 1
 echo ""
 
-# Minimum requirements
-pkg install -y chezmoi git nano screen sqlite3 python3
+# Minimum requirements first
+echo "Installing core packages..."
+pkg install -y chezmoi git nano screen
 
 # SSH setup
+echo "Testing GitHub SSH connection..."
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/github_personal
-ssh -T git@github.com
+ssh -T git@github.com 2>&1 | grep -q "successfully authenticated" && \
+  echo "GitHub SSH OK" || { echo "ERROR: GitHub SSH failed"; exit 1; }
 
 # Pull and apply dotfiles
 echo "Applying dotfiles..."
 chezmoi init --apply git@github.com:mctt/dotfiles.git
+
+# Additional packages
+echo "Installing additional packages..."
+pkg install -y sqlite3 python3 bash-completion eza
 
 # Install fzf from GitHub (includes keyboard shortcuts and shell integration)
 echo "Installing fzf..."
@@ -57,13 +66,7 @@ echo "Installing detox..."
 git clone https://github.com/Alyetama/detox.git ~/detox
 cd ~/detox
 pip install -e . --break-system-packages
-
-# Bash completion
-echo "Installing bash-completion..."
-pkg install -y bash-completion
-
 cd ~
 
 echo ""
-echo "Bootstrap complete."
-```
+echo "Bootstrap complete. Run 'source ~/.bashrc' to apply dotfiles."
