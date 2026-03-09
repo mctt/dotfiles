@@ -25,6 +25,9 @@ shopt -s nocaseglob
 #alias ll='ls -l'
 alias ..='cd ..'
 alias ...='cd ../..'
+alias grep='grep --color=auto'
+alias ports='ss -tulpn'
+alias bashrc='chezmoi edit ~/.bashrc && chezmoi --force apply ~/.bashrc && source ~/.bashrc'
 
 # eza as ls replacement
 alias ls='eza'
@@ -97,3 +100,4 @@ eval "$(chezmoi completion bash)"
 export EDITOR=nano
 
 #what the diff.  MaGriff. Tets
+# alias bashrc
