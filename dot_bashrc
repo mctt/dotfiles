@@ -33,7 +33,6 @@ alias la='eza -a'
 alias lt='eza --tree'
 alias l='eza -lh'
 
-
 # Only auto-attach if we are a login shell and not already in a multiplexer
 if [ -z "$STY" ] && [ -z "$TMUX" ] && shopt -q login_shell; then
     screen -xRR
@@ -49,7 +48,6 @@ echo "SHLVL: $SHLVL"
 # this keeps an eye in thr subs sessions
 # PS1='[$SHLVL] \u@\h:\w\$ '
 PS1='$SHLVL \h:\w\$ '
-
 
 alias python=python3.11
 
