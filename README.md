@@ -27,7 +27,7 @@ Once the storage is mounted, enter the jail and verify your configuration files.
 1. https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
 1. https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
 1. https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
-1. 
+1. https://github.com/mctt/dotfiles/blob/master/prep.sh
 
 ### Or just Download the compressed file.
 - https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
