@@ -18,6 +18,9 @@ if [ "$(hostname)" != "unas" ]; then
   [[ "$confirm" == [yY] ]] || exit 1
 fi
 
+# apply is needed for the /tmp edits.
+chezmoi apply
+
 #testing with the chezmoi git command
 chezmoi git add .
 chezmoi git commit -- -m "commit from $(hostname)"
