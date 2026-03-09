@@ -35,14 +35,21 @@ https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
 https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 ```
 
+### Or just get the compressed file.
 ```
-insert prep.tar.gz link
+https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
 ```
 
-### 1. Verify Mounts
+### 1. Verify files
 ```bash
 cd /mnt/unas
 ls *.txt
+```
+
+```
+tar xvzf prep.tar.sh
+```
+
 ```
 Expected Files:
 ```
