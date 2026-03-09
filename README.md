@@ -23,17 +23,6 @@ Map your host datasets to the jail's internal directory:
 ## 🚀 Configuration & Bootstrapping
 
 Once the storage is mounted, enter the jail and verify your configuration files.
-```
-https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
-```
-
-```
-https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
-```
-
-```
-https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
-```
 
 1. https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
 1. https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
@@ -41,9 +30,7 @@ https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 
 
 ### Or just get the compressed file.
-```
-https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
-```
+- https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
 
 ### 1. Verify files
 ```bash
