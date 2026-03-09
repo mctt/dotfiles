@@ -24,11 +24,19 @@ Map your host datasets to the jail's internal directory:
 
 Once the storage is mounted, enter the jail and verify your configuration files.
 
+https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
+https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
+https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
+
+```
+insert prep.tar.gz link
+```
+
 ### 1. Verify Mounts
 ```bash
 cd /mnt/unas
 ls *.txt
-
+```
 Expected Files:
 /mnt/unas/dot_gitconfig.txt
 /mnt/unas/executable_bootstrap.txt
