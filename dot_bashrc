@@ -21,16 +21,18 @@ shopt -s dirspell
 shopt -s nocaseglob
 
 # Aliases
-alias la='ls -la'
-alias ll='ls -l'
+#alias la='ls -la'
+#alias ll='ls -l'
 alias ..='cd ..'
 alias ...='cd ../..'
 
-# Auto-attach to screen session
-#if [ -z "$STY" ]; then
-#    screen -xRR
-#fi
-# breaks chezmoi subshell. 
+# eza as ls replacement
+alias ls='eza'
+alias ll='eza -lah'
+alias la='eza -a'
+alias lt='eza --tree'
+alias l='eza -lh'
+
 
 # Only auto-attach if we are a login shell and not already in a multiplexer
 if [ -z "$STY" ] && [ -z "$TMUX" ] && shopt -q login_shell; then
