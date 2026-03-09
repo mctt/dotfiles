@@ -41,6 +41,16 @@ ls -la ~/.ssh/
 ls -la ~/.gitconfig
 ls -la ~/bin/bootstrap.sh
 
+# What shell?
+echo $0
+
+# Set bash as default shell for root
+chsh -s /usr/local/bin/bash root
+
+# Source bashrc for current session
+/usr/local/bin/bash -c 'source ~/.bashrc'
+
 echo ""
 echo "Done. Now run:"
-echo "  bash ~/bin/bootstrap.sh"
+#echo "  bash ~/bin/bootstrap.sh"
+echo "  /usr/local/bin/bash ~/bin/bootstrap.sh"
