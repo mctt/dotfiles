@@ -35,9 +35,9 @@ https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
 https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 ```
 
-https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
-https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
-https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
+1. https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
+1. https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
+1. https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 
 
 ### Or just get the compressed file.
