@@ -35,6 +35,11 @@ https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
 https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
 ```
 
+https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
+https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
+https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
+
+
 ### Or just get the compressed file.
 ```
 https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
