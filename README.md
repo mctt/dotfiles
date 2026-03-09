@@ -31,6 +31,7 @@ Once the storage is mounted, enter the jail and verify your configuration files.
 
 ### Or just Download the compressed file.
 - https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
+
 ••• Menu and Download.
 
 ### 1. Verify files
@@ -43,7 +44,6 @@ ls *.txt
 tar xvzf prep.tar.gz
 ```
 
-```
 Expected Files:
 ```
 /mnt/unas/dot_gitconfig.txt
