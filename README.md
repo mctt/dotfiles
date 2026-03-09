@@ -34,11 +34,14 @@ Expected Files:
 /mnt/unas/executable_bootstrap.txt
 /mnt/unas/private_config.txt
 /mnt/unas/github_personal
+```
 
 ### 2. Run Bootstrap
-Ensure you have grabbed your github_personal key before proceeding with the bootstrap script.
+Ensure you have grabbed your `github_personal` key before proceeding with the bootstrap script.
 
 ### 3. Run prep.sh
-```mv executable_prep.txt prep.sh
+```
+mv executable_prep.txt prep.sh
 chmod +x prep.sh
 sh prep.sh
+```
