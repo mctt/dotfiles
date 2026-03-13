@@ -43,7 +43,7 @@ DB_FILE="/mnt/unas/p/video_index.db"
 
 # Build destination folder name from search terms
 SEARCH_FOLDER=$(IFS="_"; echo "${SEARCH_TERMS[*]}" | tr '[:upper:]' '[:lower:]')
-DEST_DIR="/mnt/unas/_crap/${SEARCH_FOLDER}"
+DEST_DIR="/mnt/unas/_crap/tmp/${SEARCH_FOLDER}"
 
 # Check if database exists
 if [ ! -f "$DB_FILE" ]; then
