@@ -54,3 +54,5 @@ echo ""
 echo "Done. Now run:"
 #echo "  bash ~/bin/bootstrap.sh"
 echo "  /usr/local/bin/bash ~/bin/bootstrap.sh"
+echo "  Then logout of:" $0
+

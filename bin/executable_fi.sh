@@ -40,7 +40,10 @@ fi
 
 # Configuration
 DB_FILE="/mnt/unas/p/video_index.db"
-DEST_DIR="/mnt/unas/_crap/tmp"
+
+# Build destination folder name from search terms
+SEARCH_FOLDER=$(IFS="_"; echo "${SEARCH_TERMS[*]}" | tr '[:upper:]' '[:lower:]')
+DEST_DIR="/mnt/unas/_crap/${SEARCH_FOLDER}"
 
 # Check if database exists
 if [ ! -f "$DB_FILE" ]; then
@@ -299,6 +302,7 @@ echo "  Expected size: $(human_readable_size $grand_total_size)"
 echo ""
 echo "Destination:"
 echo "  Location: $DEST_DIR/"
+echo "  Search terms: ${SEARCH_TERMS[*]}"
 echo "  - Folders copied with full structure"
 echo "  - Individual files in: $DEST_DIR/_matched_files/"
 echo ""
