@@ -104,3 +104,9 @@ export EDITOR=nano
 
 #what the diff.  MaGriff. Tets
 # alias bashrc
+#detox="/data/data/com.termux/files/usr/bin/detoxpy"
+#detox="/usr/local/bin/detoxpy"
+alias detoxpy="/usr/local/bin/detoxpy"
+
+#/usr/local/bin/detoxpy
+#updated fri 27 Mar 2026 21:03
