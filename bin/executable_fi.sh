@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# Parse options
+# Parse options and search terms
 AUTO_YES=false
 SEARCH_TERMS=()
+EXCLUDE_TERMS=()
+DIR_INCLUDE=()
+DIR_EXCLUDE=()
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -10,19 +13,55 @@ while [[ $# -gt 0 ]]; do
             AUTO_YES=true
             shift
             ;;
+        -d)
+            # Directory include: next argument is the directory pattern
+            shift
+            if [ -z "$1" ]; then
+                echo "ERROR: -d requires a directory pattern"
+                exit 1
+            fi
+            DIR_INCLUDE+=("$1")
+            shift
+            ;;
+        -D)
+            # Directory exclude: next argument is the directory pattern to exclude
+            shift
+            if [ -z "$1" ]; then
+                echo "ERROR: -D requires a directory pattern"
+                exit 1
+            fi
+            DIR_EXCLUDE+=("$1")
+            shift
+            ;;
         -h|--help)
-            echo "Usage: $0 [-y] <search_term1> [search_term2] [search_term3] ..."
+            echo "Usage: $0 [-y] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
             echo ""
             echo "Options:"
-            echo "  -y, --yes    Skip confirmation prompt and proceed automatically"
-            echo "  -h, --help   Show this help message"
+            echo "  -y, --yes       Skip confirmation prompt and proceed automatically"
+            echo "  -d <pattern>    Include only items with this pattern in their path"
+            echo "  -D <pattern>    Exclude items with this pattern in their path"
+            echo "  -h, --help      Show this help message"
             echo ""
-            echo "Example:"
-            echo "  $0 paola lana              # Search and ask for confirmation"
-            echo "  $0 -y paola lana           # Search and copy automatically"
+            echo "Search Terms:"
+            echo "  term            Include items with this term in filename"
+            echo "  -term           Exclude items with this term in filename (prefix with -)"
             echo ""
-            echo "Note: ALL search terms must be present in the folder/file name"
+            echo "Examples:"
+            echo "  $0 paola lana                    # Output to: /tmp/paola_lana/"
+            echo "  $0 paola -lana                   # Output to: /tmp/paola_not_lana/"
+            echo "  $0 -d hall paola                 # Output to: /tmp/d_hall_paola/"
+            echo "  $0 -d hall -D trailer paola      # Output to: /tmp/d_hall_notd_trailer_paola/"
+            echo ""
+            echo "Notes:"
+            echo "  - Output folder is named based on search criteria"
+            echo "  - Multiple -d flags = OR logic (match ANY directory)"
+            echo "  - Multiple -D flags = AND logic (exclude ALL directories)"
             exit 0
+            ;;
+        -*)
+            # Term starting with - is an exclusion (skip the - prefix)
+            EXCLUDE_TERMS+=("${1#-}")
+            shift
             ;;
         *)
             SEARCH_TERMS+=("$1")
@@ -31,9 +70,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Check if at least one search term was provided
-if [ ${#SEARCH_TERMS[@]} -eq 0 ]; then
-    echo "Usage: $0 [-y] <search_term1> [search_term2] [search_term3] ..."
+# Check if at least one search criterion was provided
+if [ ${#SEARCH_TERMS[@]} -eq 0 ] && [ ${#EXCLUDE_TERMS[@]} -eq 0 ] && [ ${#DIR_INCLUDE[@]} -eq 0 ] && [ ${#DIR_EXCLUDE[@]} -eq 0 ]; then
+    echo "Usage: $0 [-y] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
     echo "Use -h or --help for more information"
     exit 1
 fi
@@ -41,9 +80,53 @@ fi
 # Configuration
 DB_FILE="/mnt/unas/p/video_index.db"
 
-# Build destination folder name from search terms
-SEARCH_FOLDER=$(IFS="_"; echo "${SEARCH_TERMS[*]}" | tr '[:upper:]' '[:lower:]')
-DEST_DIR="/mnt/unas/_crap/tmp/${SEARCH_FOLDER}"
+# Build destination folder name from search criteria
+DEST_NAME=""
+
+# Add directory filters to name
+for dir_term in "${DIR_INCLUDE[@]}"; do
+    if [ -z "$DEST_NAME" ]; then
+        DEST_NAME="d_${dir_term}"
+    else
+        DEST_NAME="${DEST_NAME}_d_${dir_term}"
+    fi
+done
+
+for dir_term in "${DIR_EXCLUDE[@]}"; do
+    if [ -z "$DEST_NAME" ]; then
+        DEST_NAME="notd_${dir_term}"
+    else
+        DEST_NAME="${DEST_NAME}_notd_${dir_term}"
+    fi
+done
+
+# Add include terms to name
+for term in "${SEARCH_TERMS[@]}"; do
+    if [ -z "$DEST_NAME" ]; then
+        DEST_NAME="${term}"
+    else
+        DEST_NAME="${DEST_NAME}_${term}"
+    fi
+done
+
+# Add exclude terms to name
+for term in "${EXCLUDE_TERMS[@]}"; do
+    if [ -z "$DEST_NAME" ]; then
+        DEST_NAME="not_${term}"
+    else
+        DEST_NAME="${DEST_NAME}_not_${term}"
+    fi
+done
+
+# If no name built (shouldn't happen), use timestamp
+if [ -z "$DEST_NAME" ]; then
+    DEST_NAME="search_$(date +%Y%m%d_%H%M%S)"
+fi
+
+# Clean the name (remove special chars, limit length)
+DEST_NAME=$(echo "$DEST_NAME" | sed 's/[^a-zA-Z0-9_-]/_/g' | cut -c1-100)
+
+DEST_DIR="/mnt/unas/_crap/tmp/${DEST_NAME}"
 
 # Check if database exists
 if [ ! -f "$DB_FILE" ]; then
@@ -54,10 +137,26 @@ fi
 
 mkdir -p "$DEST_DIR"
 
-echo "Searching database for items containing ALL of: ${SEARCH_TERMS[*]}"
+echo "Output destination: $DEST_DIR"
 echo ""
 
-# Build SQL WHERE clause for all terms (case-insensitive)
+# Display search criteria
+echo "Search Criteria:"
+if [ ${#SEARCH_TERMS[@]} -gt 0 ]; then
+    echo "  Filename includes (ALL): ${SEARCH_TERMS[*]}"
+fi
+if [ ${#EXCLUDE_TERMS[@]} -gt 0 ]; then
+    echo "  Filename excludes (NONE): ${EXCLUDE_TERMS[*]}"
+fi
+if [ ${#DIR_INCLUDE[@]} -gt 0 ]; then
+    echo "  Path must contain (ANY): ${DIR_INCLUDE[*]}"
+fi
+if [ ${#DIR_EXCLUDE[@]} -gt 0 ]; then
+    echo "  Path must NOT contain (ALL): ${DIR_EXCLUDE[*]}"
+fi
+echo ""
+
+# Build SQL WHERE clause for filename INCLUDE terms (all must match)
 WHERE_CLAUSE=""
 for term in "${SEARCH_TERMS[@]}"; do
     # Escape single quotes in search term
@@ -69,6 +168,56 @@ for term in "${SEARCH_TERMS[@]}"; do
         WHERE_CLAUSE="$WHERE_CLAUSE AND name LIKE '%$term_escaped%'"
     fi
 done
+
+# Add filename EXCLUDE terms (none can match)
+for term in "${EXCLUDE_TERMS[@]}"; do
+    # Escape single quotes in exclude term
+    term_escaped=$(echo "$term" | sed "s/'/''/g")
+    
+    if [ -z "$WHERE_CLAUSE" ]; then
+        WHERE_CLAUSE="name NOT LIKE '%$term_escaped%'"
+    else
+        WHERE_CLAUSE="$WHERE_CLAUSE AND name NOT LIKE '%$term_escaped%'"
+    fi
+done
+
+# Add directory INCLUDE terms (any must match - OR logic)
+if [ ${#DIR_INCLUDE[@]} -gt 0 ]; then
+    dir_include_clause=""
+    for dir_term in "${DIR_INCLUDE[@]}"; do
+        # Escape single quotes
+        dir_escaped=$(echo "$dir_term" | sed "s/'/''/g")
+        
+        if [ -z "$dir_include_clause" ]; then
+            dir_include_clause="path LIKE '%$dir_escaped%'"
+        else
+            dir_include_clause="$dir_include_clause OR path LIKE '%$dir_escaped%'"
+        fi
+    done
+    
+    if [ -z "$WHERE_CLAUSE" ]; then
+        WHERE_CLAUSE="($dir_include_clause)"
+    else
+        WHERE_CLAUSE="$WHERE_CLAUSE AND ($dir_include_clause)"
+    fi
+fi
+
+# Add directory EXCLUDE terms (none can match - AND logic)
+for dir_term in "${DIR_EXCLUDE[@]}"; do
+    # Escape single quotes
+    dir_escaped=$(echo "$dir_term" | sed "s/'/''/g")
+    
+    if [ -z "$WHERE_CLAUSE" ]; then
+        WHERE_CLAUSE="path NOT LIKE '%$dir_escaped%'"
+    else
+        WHERE_CLAUSE="$WHERE_CLAUSE AND path NOT LIKE '%$dir_escaped%'"
+    fi
+done
+
+# If no conditions, match everything
+if [ -z "$WHERE_CLAUSE" ]; then
+    WHERE_CLAUSE="1=1"
+fi
 
 # Search folders (only active items)
 echo "Querying folders..."
@@ -88,7 +237,7 @@ done < <(sqlite3 -separator '|' "$DB_FILE" "SELECT path, COALESCE(size, 0) FROM 
 
 # Check if anything was found
 if [ ${#FOLDERS[@]} -eq 0 ] && [ ${#FILES[@]} -eq 0 ]; then
-    echo "No folders or files found containing ALL of: ${SEARCH_TERMS[*]}"
+    echo "No folders or files found matching criteria"
     exit 0
 fi
 
@@ -269,11 +418,11 @@ if [ ${#FILES[@]} -gt 0 ]; then
         # Get the parent directory name to preserve some context
         parent_dir=$(basename "$(dirname "$file")")
         
-        # Create a subdirectory for files found by filename
-        mkdir -p "$DEST_DIR/_matched_files/$parent_dir"
+        # Copy directly to destination, preserving parent folder name
+        mkdir -p "$DEST_DIR/$parent_dir"
         
         echo "Copying file: $file"
-        if rsync -a --append-verify --progress "$file" "$DEST_DIR/_matched_files/$parent_dir/"; then
+        if rsync -a --append-verify --progress "$file" "$DEST_DIR/$parent_dir/"; then
             ((transferred_files++))
             transferred_bytes=$((transferred_bytes + ${FILE_SIZES[$i]}))
         else
@@ -302,9 +451,8 @@ echo "  Expected size: $(human_readable_size $grand_total_size)"
 echo ""
 echo "Destination:"
 echo "  Location: $DEST_DIR/"
-echo "  Search terms: ${SEARCH_TERMS[*]}"
-echo "  - Folders copied with full structure"
-echo "  - Individual files in: $DEST_DIR/_matched_files/"
+echo "  - Matched folders copied with full structure"
+echo "  - Matched files organized by parent folder"
 echo ""
 
 # Show disk usage of destination
