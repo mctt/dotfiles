@@ -1,5 +1,5 @@
 #!/bin/bash
-# Fri 27 Mar 2026 21:04
+
 # Parse options and search terms
 AUTO_YES=false
 SEARCH_TERMS=()
@@ -135,7 +135,7 @@ if [ ! -f "$DB_FILE" ]; then
     exit 1
 fi
 
-mkdir -p "$DEST_DIR"
+# Don't create destination folder yet - wait until user confirms transfer
 
 echo "Output destination: $DEST_DIR"
 echo ""
@@ -345,6 +345,9 @@ if [ "$AUTO_YES" = false ]; then
 else
     echo "Auto-confirm enabled (-y flag). Proceeding with transfer..."
 fi
+
+# NOW create the destination folder (after confirmation)
+mkdir -p "$DEST_DIR"
 
 echo ""
 echo "Starting transfer..."
