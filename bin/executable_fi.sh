@@ -6,11 +6,28 @@ SEARCH_TERMS=()
 EXCLUDE_TERMS=()
 DIR_INCLUDE=()
 DIR_EXCLUDE=()
+INPUT_FILE=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -y|--yes)
             AUTO_YES=true
+            shift
+            ;;
+        -f|-a|-b|--file|--batch)
+            # Read folder names from file
+            shift
+            if [ -z "$1" ]; then
+                echo "ERROR: -f/-a/-b requires a filename"
+                exit 1
+            fi
+            
+            if [ ! -f "$1" ]; then
+                echo "ERROR: File not found: $1"
+                exit 1
+            fi
+            
+            INPUT_FILE="$1"
             shift
             ;;
         -d)
@@ -34,25 +51,33 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -h|--help)
-            echo "Usage: $0 [-y] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
+            echo "Usage: $0 [-y] [-f|-a|-b file] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
             echo ""
             echo "Options:"
-            echo "  -y, --yes       Skip confirmation prompt and proceed automatically"
-            echo "  -d <pattern>    Include only items with this pattern in their path"
-            echo "  -D <pattern>    Exclude items with this pattern in their path"
-            echo "  -h, --help      Show this help message"
+            echo "  -y, --yes           Skip confirmation prompt and proceed automatically"
+            echo "  -f, -a, -b <file>   Read folder names from file and process batch"
+            echo "  -d <pattern>        Include only items with this pattern in their path"
+            echo "  -D <pattern>        Exclude items with this pattern in their path"
+            echo "  -h, --help          Show this help message"
             echo ""
             echo "Search Terms:"
-            echo "  term            Include items with this term in filename"
-            echo "  -term           Exclude items with this term in filename (prefix with -)"
+            echo "  term                Include items with this term in filename"
+            echo "  -term               Exclude items with this term in filename (prefix with -)"
             echo ""
             echo "Examples:"
             echo "  $0 paola lana                    # Output to: /tmp/paola_lana/"
             echo "  $0 paola -lana                   # Output to: /tmp/paola_not_lana/"
             echo "  $0 -d hall paola                 # Output to: /tmp/d_hall_paola/"
-            echo "  $0 -d hall -D trailer paola      # Output to: /tmp/d_hall_notd_trailer_paola/"
+            echo "  $0 -f directories.txt            # Process folder names from file"
+            echo "  $0 -y -a searches.txt            # Auto-confirm batch mode"
+            echo ""
+            echo "Folder Name Format (for -f/-a/-b):"
+            echo "  d_hall_lana      → fi.sh -d hall lana"
+            echo "  ella_not_logan   → fi.sh ella -logan"
+            echo "  d_fair_LUX       → fi.sh -d fair LUX"
             echo ""
             echo "Notes:"
+            echo "  - Each line in batch file creates its own output folder"
             echo "  - Output folder is named based on search criteria"
             echo "  - Multiple -d flags = OR logic (match ANY directory)"
             echo "  - Multiple -D flags = AND logic (exclude ALL directories)"
@@ -70,9 +95,136 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Check if at least one search criterion was provided
+# If input file was provided, process it in batch mode
+if [ -n "$INPUT_FILE" ]; then
+    echo "========================================"
+    echo "BATCH MODE: Processing file: $INPUT_FILE"
+    echo "========================================"
+    echo ""
+    
+    # Function to parse folder name into fi.sh arguments
+    parse_folder_to_args() {
+        local folder_name="$1"
+        local args=""
+        
+        # DEBUG: Show what we're parsing
+        echo "DEBUG: parse_folder_to_args input: '$folder_name'" >&2
+        
+        # Split by underscore
+        IFS='_' read -ra PARTS <<< "$folder_name"
+        
+        # DEBUG: Show the parts
+        echo "DEBUG: Split into ${#PARTS[@]} parts: ${PARTS[*]}" >&2
+        
+        local i=0
+        while [ $i -lt ${#PARTS[@]} ]; do
+            local part="${PARTS[$i]}"
+            
+            echo "DEBUG:   Part[$i] = '$part'" >&2
+            
+            case "$part" in
+                d)
+                    # Next part is directory include
+                    ((i++))
+                    if [ $i -lt ${#PARTS[@]} ]; then
+                        echo "DEBUG:     -> Directory include: ${PARTS[$i]}" >&2
+                        args="$args -d ${PARTS[$i]}"
+                    fi
+                    ;;
+                notd)
+                    # Next part is directory exclude
+                    ((i++))
+                    if [ $i -lt ${#PARTS[@]} ]; then
+                        echo "DEBUG:     -> Directory exclude: ${PARTS[$i]}" >&2
+                        args="$args -D ${PARTS[$i]}"
+                    fi
+                    ;;
+                not)
+                    # Next part is filename exclude
+                    ((i++))
+                    if [ $i -lt ${#PARTS[@]} ]; then
+                        echo "DEBUG:     -> Filename exclude: ${PARTS[$i]}" >&2
+                        args="$args -${PARTS[$i]}"
+                    fi
+                    ;;
+                *)
+                    # Regular filename include
+                    echo "DEBUG:     -> Filename include: $part" >&2
+                    args="$args $part"
+                    ;;
+            esac
+            ((i++))
+        done
+        
+        echo "DEBUG: parse_folder_to_args output: '$args'" >&2
+        echo "$args"
+    }
+    
+    # Process each line in the file
+    line_number=0
+    total_lines=$(grep -v "^#" "$INPUT_FILE" | grep -v "^[[:space:]]*$" | wc -l | tr -d ' ')
+    processed=0
+    
+    while IFS= read -r folder_name || [ -n "$folder_name" ]; do
+        ((line_number++))
+        
+        # Skip empty lines and comments
+        [[ -z "$folder_name" || "$folder_name" =~ ^# ]] && continue
+        
+        # DEBUG: Show raw line
+        echo "DEBUG: Raw line from file: '$folder_name'" >&2
+        
+        # Clean the folder name - strip whitespace, trailing slashes, and leading ./
+        folder_name=$(echo "$folder_name" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s:/*$::;s:^\./::')
+        
+        # DEBUG: Show after cleaning
+        echo "DEBUG: After cleaning: '$folder_name'" >&2
+        
+        # Skip if empty after cleaning
+        [ -z "$folder_name" ] && continue
+        
+        ((processed++))
+        
+        echo ""
+        echo "========================================"
+        echo "[$processed/$total_lines] Processing: $folder_name"
+        echo "========================================"
+        
+        # Parse folder name to arguments
+        args=$(parse_folder_to_args "$folder_name")
+        
+        # Build the command with -y flag if it was set for batch mode
+        if [ "$AUTO_YES" = true ]; then
+            cmd="$0 -y $args"
+            echo "Running: fi.sh -y $args"
+        else
+            cmd="$0 $args"
+            echo "Running: fi.sh $args"
+        fi
+        
+        echo ""
+        
+        # Execute fi.sh with parsed arguments (recursive call)
+        eval "$cmd"
+        
+        echo ""
+        echo "----------------------------------------"
+        echo "Completed: $folder_name"
+        echo "----------------------------------------"
+        
+    done < "$INPUT_FILE"
+    
+    echo ""
+    echo "========================================"
+    echo "BATCH PROCESSING COMPLETE!"
+    echo "Processed $processed searches from $INPUT_FILE"
+    echo "========================================"
+    exit 0
+fi
+
+# Check if at least one search criterion was provided (for single-item mode)
 if [ ${#SEARCH_TERMS[@]} -eq 0 ] && [ ${#EXCLUDE_TERMS[@]} -eq 0 ] && [ ${#DIR_INCLUDE[@]} -eq 0 ] && [ ${#DIR_EXCLUDE[@]} -eq 0 ]; then
-    echo "Usage: $0 [-y] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
+    echo "Usage: $0 [-y] [-f|-a/-b file] [-d dir] [-D dir] <search_term1> [search_term2] [-exclude_term] ..."
     echo "Use -h or --help for more information"
     exit 1
 fi
