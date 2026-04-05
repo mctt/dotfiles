@@ -1,3 +1,6 @@
+
+in [Section 'fi.sh'](#fi.sh) 
+
 # TrueNAS Jail Configuration Guide
 
 This guide outlines the essential steps for setting up a TrueNAS jail, configuring networking, and mounting external storage.
@@ -63,7 +66,8 @@ sh prep.sh
 ```
 That's it. You can now start using your bash environment.
 
-## fi.sh
+## fi.sh <a id='fi.sh'></a>
+
 # fi.sh — Video File Index Search & Transfer
 
 `fi.sh` searches a SQLite video index (built by `ultimate-index-update.sh`) and copies matching files and folders to a staging destination using rsync. It supports flexible include/exclude filtering on both filenames and directory paths, with an optional batch mode for processing multiple searches from a file.
@@ -76,7 +80,8 @@ That's it. You can now start using your bash environment.
 |------|---------|
 | `sqlite3` | Query the video index database |
 | `rsync` | Copy matched files to destination |
-| `detox` | Clean up file/folder names after transfer |
+| `detox` | Clean up file/folder
+| `detoxpy` | detoxpy is better. It doesn't fail and works well with detox -prlt . Of course you have detoxpy aliases to detox.|
 | `bash` | v4+ (uses arrays, `read -ra`, process substitution) |
 
 The index database must exist at `/mnt/unas/p/video_index.db`. Run `ultimate-index-update.sh` first if it doesn't.
@@ -231,4 +236,9 @@ Run `ultimate-index-update.sh` periodically (or after adding/removing files) to 
 - Batch mode uses `eval` to reconstruct and invoke `fi.sh` recursively; folder names in the batch file must not contain shell metacharacters.
 - DEBUG lines are currently active in `parse_folder_to_args` and print to stderr during batch runs.
 - The `-f`, `-a`, and `-b` flags are aliases for the same behaviour.
+
+- Use FD to generate your input file list;
+  ```
+fd -t d -d 1 . > directories.txt
+  ```
 
