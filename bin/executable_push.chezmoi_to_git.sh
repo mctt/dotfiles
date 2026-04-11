@@ -26,6 +26,7 @@ echo "Committing and pushing to GitHub..."
 # Using chezmoi git commands (no subshell created)
 chezmoi git add .
 chezmoi git commit -- -m "update from $(hostname) - $(date '+%Y-%m-%d %H:%M:%S')"
+chezmoi git pull -- --rebase
 chezmoi git push
 
 echo ""
