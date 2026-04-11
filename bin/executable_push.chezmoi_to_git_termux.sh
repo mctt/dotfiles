@@ -1,5 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
+# tt_edit 15:43 11 April 2026
+# https://claude.ai/share/675440a5-96dd-4110-9bb3-4d7388ed5616
+
+
 # Push Termux dotfiles to GitHub
 # Only adds/commits Termux-specific files - never uses chezmoi re-add
 # which would wipe unas files from the repo
