@@ -14,7 +14,9 @@ fi
 
 # Pull latest from remote first to avoid divergence
 echo "Pulling latest from GitHub..."
+chezmoi git stash
 chezmoi git pull -- --rebase
+chezmoi git stash pop
 
 echo "Re-adding tracked Termux dotfiles..."
 chezmoi re-add
