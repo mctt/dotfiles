@@ -1,0 +1,3 @@
+# fixes HOME and END keys so screen passes them.
+
+bindkey "^[[F" stuff "^[[F"
