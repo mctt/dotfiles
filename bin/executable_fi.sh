@@ -589,6 +589,8 @@ if [ ${#FILES[@]} -gt 0 ]; then
 fi
 
 echo "Running detox to clean up file and folder names..."
+#this is really detoxpy with a .bashrc alias
+#the standard for this is detox -prlt 
 detox -r "$DEST_DIR" 2>/dev/null
 
 echo ""
