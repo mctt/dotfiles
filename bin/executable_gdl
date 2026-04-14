@@ -3,8 +3,6 @@
 # Usage: gdl.sh [OPTIONS] [URL...]
 # Switches: -f FILE  -a FILE  -b FILE  (URL list files)
 
-# https://claude.ai/share/675440a5-96dd-4110-9bb3-4d7388ed5616
-
 set -euo pipefail
 
 # =============================================================================
