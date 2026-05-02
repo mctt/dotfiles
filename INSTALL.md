@@ -1,6 +1,7 @@
 # unas jail — package install
 # https://claude.ai/share/35e8c040-aaf8-458a-85eb-ba0888a38648
-```pkg query -e '%a = 0' '%n' | sort
+```
+pkg query -e '%a = 0' '%n' | sort
 ```
 
 ```sh
@@ -33,7 +34,8 @@ pkg install -y \
 
 ## Python packages
 
-```pip list --not-required --format=freeze | cut -d= -f1 | sort
+```
+pip list --not-required --format=freeze | cut -d= -f1 | sort
 ```
 
 ```sh
