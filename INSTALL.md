@@ -40,9 +40,19 @@ pkg install -y \
 ```sh
 pip list --not-required --format=freeze | cut -d= -f1 | sort
 ```
-
+## unas python pip
 ```sh
 pip install \
   detoxpy \
   packaging
+```
+## Termux python pip
+```sh
+detoxpy                                           gallery_dl
+httpx                                             pip
+poetry
+setuptools
+termux-apt-repo
+wheel                                             yt-dlp
+zstandard
 ```
