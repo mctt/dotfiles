@@ -1,19 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# tt_edit 15:43 11 April 2026
-# https://claude.ai/share/675440a5-96dd-4110-9bb3-4d7388ed5616
-
-
 # Push Termux dotfiles to GitHub
-# Only adds/commits Termux-specific files - never uses chezmoi re-add
-# which would wipe unas files from the repo
-
-TERMUX_FILES=(
-    "bin/executable_gdl"
-    "bin/executable_termux-url-opener"
-    "bin/executable_push.chezmoi_to_git_termux.sh"
-    "private_dot_bashrc.termux"
-)
+# Only manages Termux-specific files - does not touch unas files
 
 echo "Syncing Termux dotfiles to GitHub..."
 echo ""
@@ -24,28 +12,19 @@ if [ ! -d "/data/data/com.termux" ]; then
     exit 1
 fi
 
-# Pull latest from remote first
+# Pull latest from remote first to avoid divergence
 echo "Pulling latest from GitHub..."
-cd ~/.local/share/chezmoi
-git stash
-git pull --rebase origin master
-git stash pop 2>/dev/null || true
+chezmoi git stash
+chezmoi git pull -- --rebase
+chezmoi git stash pop
 
-# Add only Termux-specific files from local filesystem
-echo "Re-adding Termux dotfiles..."
-chezmoi add ~/bin/gdl
-chezmoi add ~/bin/termux-url-opener
-chezmoi add ~/bin/push.chezmoi_to_git_termux.sh
-chezmoi add ~/.bashrc.termux
+echo "Re-adding tracked Termux dotfiles..."
+chezmoi re-add
 
 echo ""
 echo "Committing and pushing to GitHub..."
 
-# Stage only Termux files explicitly - never git add .
-for f in "${TERMUX_FILES[@]}"; do
-    chezmoi git add -- "$f"
-done
-
+chezmoi git add .
 chezmoi git commit -- -m "update from termux - $(date '+%Y-%m-%d %H:%M:%S')"
 chezmoi git push
 
