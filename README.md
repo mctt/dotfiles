@@ -1,3 +1,4 @@
+
 # TrueNAS Jail Configuration Guide
 
 This guide outlines the essential steps for setting up a TrueNAS jail, configuring networking, and mounting external storage.
@@ -22,62 +23,91 @@ Map your host datasets to the jail's internal directory:
 
 ## 🚀 Configuration & Bootstrapping
 
-Once the storage is mounted, enter the jail and verify your configuration files.
+Once the storage is mounted, enter the jail and copy your `github_personal` SSH key to `/mnt/unas/github_personal` before proceeding.
 
+### Option A — Download individual files
 1. https://github.com/mctt/dotfiles/blob/master/dot_gitconfig
-1. https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
-1. https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
-1. https://github.com/mctt/dotfiles/blob/master/prep.sh
+2. https://github.com/mctt/dotfiles/blob/master/bin/executable_bootstrap.sh
+3. https://github.com/mctt/dotfiles/blob/master/private_dot_ssh/private_config
+4. https://github.com/mctt/dotfiles/blob/master/prep.sh
 
-### Or just Download the compressed file.
+### Option B — Download the compressed file (recommended)
 - https://github.com/mctt/dotfiles/blob/master/prep.tar.gz
 
-••• Menu and Download.
+Click ••• Menu and Download.
 
-### 1. Verify files
+### 1. Extract and verify files
 ```bash
 cd /mnt/unas
-ls *.txt
-```
-
-```
 tar xvzf prep.tar.gz
 ```
 
-Expected Files:
+Expected files after extraction:
 ```
-/mnt/unas/dot_gitconfig.txt
-/mnt/unas/executable_bootstrap.txt
-/mnt/unas/private_config.txt
+/mnt/unas/private_dot_ssh/private_config
+/mnt/unas/bin/executable_bootstrap.sh
+/mnt/unas/prep.sh
+/mnt/unas/dot_gitconfig
 /mnt/unas/github_personal
 ```
 
-### 2. github_personal key
-Ensure you have grabbed your `github_personal` key before proceeding with the prep.sh and bootstrap.sh scripts.
-
-### 3. Run prep.sh
-```
-mv executable_prep.txt prep.sh
-chmod +x prep.sh
-sh prep.sh
+### 2. Run prep.sh
+```bash
+sh /mnt/unas/prep.sh
 ```
 
-### 4. Run boostrap.sh
-```
-mv executable_boostrap.txt bootstrap.sh
-chmod +x bootstrap.sh
-sh boostrap.sh
+prep.sh will:
+- Set the hostname
+- Install bash
+- Copy SSH config, gitconfig, bootstrap.sh and github_personal to correct locations
+- Set correct file permissions
+
+### 3. Run bootstrap.sh
+```bash
+/usr/local/bin/bash ~/bin/bootstrap.sh
 ```
 
-### 5. To push changes use GitHub and chezmoi. unas is the master.
-```
+bootstrap.sh will:
+- Install chezmoi, git, nano, screen
+- Test GitHub SSH connection
+- Pull and apply dotfiles from GitHub
+- Install additional packages (sqlite3, python3, bash-completion, eza)
+- Install fzf from GitHub
+- Install detox from GitHub
+
+---
+
+## 🔄 Keeping Dotfiles in Sync
+
+### unas is the master. To push changes:
+```bash
 ssh unas
-push.chezmoi_to_git.sh
+push_chezmoi_to_git.sh
 ```
 
-### 6. To push changes on Termux use;
+### On Termux (S23Ultra):
+```bash
+push_chezmoi_to_git_termux.sh
 ```
-push.chezmoi_to_git_termux.sh
+
+### On any other jail to pull latest changes:
+```bash
+chezmoi update
+```
+
+---
+
+## 📎 Reference
+- Dotfiles repo: https://github.com/mctt/dotfiles
+- Setup conversation: https://claude.ai/share/256f15e2-cd71-409e-9270-7bef52dfbffa
+```
+
+Update it on unas:
+
+```bash
+chezmoi edit ~/README.md
+chezmoi apply ~/README.md
+~/bin/push_chezmoi_to_git.sh
 ```
 
 # End
