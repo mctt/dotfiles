@@ -122,7 +122,6 @@ chezmoi update
 - Setup conversation: https://claude.ai/share/256f15e2-cd71-409e-9270-7bef52dfbffa
 
 # End
-```
 
 Update on unas:
 
