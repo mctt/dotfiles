@@ -52,8 +52,8 @@ Expected Files:
 /mnt/unas/github_personal
 ```
 
-### 2. Run Bootstrap
-Ensure you have grabbed your `github_personal` key before proceeding with the bootstrap script.
+### 2. github_personal key
+Ensure you have grabbed your `github_personal` key before proceeding with the prep.sh and bootstrap.sh scripts.
 
 ### 3. Run prep.sh
 ```
@@ -61,3 +61,23 @@ mv executable_prep.txt prep.sh
 chmod +x prep.sh
 sh prep.sh
 ```
+
+### 4. Run boostrap.sh
+```
+mv executable_boostrap.txt bootstrap.sh
+chmod +x bootstrap.sh
+sh boostrap.sh
+```
+
+### 5. To push changes use GitHub and chezmoi. unas is the master.
+```
+ssh unas
+push.chezmoi_to_git.sh
+```
+
+### 6. To push changes on Termux use;
+```
+push.chezmoi_to_git_termux.sh
+```
+
+# End
