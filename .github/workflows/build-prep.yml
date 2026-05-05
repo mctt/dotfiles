@@ -1,0 +1,29 @@
+name: Build prep.tar.gz
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build prep.tar.gz
+        run: |
+          tar czf prep.tar.gz \
+            dot_gitconfig \
+            private_dot_ssh/private_config \
+            bin/executable_bootstrap.sh \
+            prep.sh
+
+      - name: Commit and push prep.tar.gz
+        run: |
+          git config user.email "7041110+mctt@users.noreply.github.com"
+          git config user.name "mctt"
+          git add prep.tar.gz
+          git commit -m "auto-build prep.tar.gz" || echo "Nothing to commit"
+          git push
