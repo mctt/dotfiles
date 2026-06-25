@@ -1,0 +1,6 @@
+# Enable syntax highlighting
+#include /usr/local/share/nano/*.nanorc
+set softwrap
+
+include "/data/data/com.termux/files/usr/share/nano/*.nanorc"
+
