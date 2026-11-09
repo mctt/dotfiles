@@ -3,5 +3,10 @@ case "$(hostname)" in
   qnas)    [ -f ~/.bashrc.qnas ]    && source ~/.bashrc.qnas ;;
   delltop) [ -f ~/.bashrc.delltop ] && source ~/.bashrc.delltop ;;
   termux)       [ -f ~/.bashrc.termux ]  && source ~/.bashrc.termux ;;
+  localhost)       [ -f ~/.bashrc.termux ]  && source ~/.bashrc.termux ;;
+
 esac
 
+
+# Added by termux-url-opener installer
+#export PATH="$HOME/bin:$PATH"

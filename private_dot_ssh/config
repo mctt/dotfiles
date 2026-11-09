@@ -1,3 +1,10 @@
+Host vmubuntu
+ HostName 100.122.15.19
+# Tailscale
+ User user
+ Port 22
+ IdentityFile ~/.ssh/id_rsa
+
 Host github.com
   HostName github.com
   User git

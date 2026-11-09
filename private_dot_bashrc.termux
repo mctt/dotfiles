@@ -1,2 +1,4 @@
 export PATH="$HOME/bin:$PATH"
-include "$HOME/.nanorc.termux
+#detox="/data/data/com.termux/files/usr/bin/detoxpy"
+alias python=python3.14.6
+alias venv="source venv/bin/activate"

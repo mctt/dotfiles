@@ -1,3 +1,4 @@
+#!/bin/bash
 # done use bin/bash because the widget wont.
 # works fine detox -prl ~/storage/downloads/synco/*
 detox -prlt ~/storage/downloads/synco/*

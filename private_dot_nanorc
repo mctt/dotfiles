@@ -1,3 +1,8 @@
+#GNU nano 9.2                                 .nanorc.termux
 # Enable syntax highlighting
-include /usr/local/share/nano/*.nanorc
+#truenas/
+#include /usr/local/share/nano/*.nanorc
 set softwrap
+
+#termux
+include "/data/data/com.termux/files/usr/share/nano/*.nanorc"
